@@ -1,53 +1,82 @@
 body {
+    background-color: #faf8ef;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #faf8ef;
 }
 
-#game-container {
+.game-container {
     text-align: center;
 }
 
-#score {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-#grid-container {
-    width: 400px;
-    height: 400px;
+.grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 10px;
-    background-color: #bbada0;
-    padding: 10px;
-    border-radius: 10px;
+    grid-template-columns: repeat(4, 100px);
+    grid-gap: 10px;
+    margin: 20px auto;
 }
 
-.grid-cell {
-    width: 100%;
-    height: 100%;
-    background-color: #cdc1b4;
+.tile {
+    width: 100px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 40px;
-    font-weight: bold;
+    font-size: 24px;
+    background-color: #eee4da;
     color: #776e65;
     border-radius: 5px;
+    transition: background-color 0.3s, transform 0.1s;
 }
 
-.grid-cell[data-value="2"] {
-    background-color: #eee4da;
+.tile-2 { background-color: #eee4da; }
+.tile-4 { background-color: #ede0c8; }
+.tile-8 { background-color: #f2b179; }
+.tile-16 { background-color: #f59563; }
+.tile-32 { background-color: #f67c5f; }
+.tile-64 { background-color: #f67c5f; }
+.tile-128 { background-color: #f9f5d1; }
+.tile-256 { background-color: #edcf72; }
+.tile-512 { background-color: #edcc61; }
+.tile-1024 { background-color: #edc850; }
+.tile-2048 { background-color: #edc53f; }
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-.grid-cell[data-value="4"] {
-    background-color: #ede0c8;
+.score {
+    font-size: 18px;
 }
 
-/* Добавьте стили для других значений */
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.controls > div {
+    display: flex;
+}
+
+.control {
+    padding: 10px;
+    font-size: 24px;
+    margin: 5px;
+    cursor: pointer;
+    background-color: #f0e4d7;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.control:hover {
+    background-color: #e0d2c5;
+}
