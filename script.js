@@ -70,45 +70,29 @@ document.getElementById("down").addEventListener("click", slideDown);
 document.getElementById("left").addEventListener("click", slideLeft);
 document.getElementById("right").addEventListener("click", slideRight);
 
-// Implement swipe detection
-let startX, startY;
-
-grid.addEventListener("touchstart", (e) => {
-    const touch = e.touches[0];
-    startX = touch.clientX;
-    startY = touch.clientY;
-});
-
-grid.addEventListener("touchmove", (e) => {
-    e.preventDefault(); // Предотвращаем прокрутку страницы
-});
-
-grid.addEventListener("touchend", (e) => {
-    const touch = e.changedTouches[0];
-    const deltaX = touch.clientX - startX;
-    const deltaY = touch.clientY - startY;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX > 0) slideRight(); // Swipe right
-        else slideLeft(); // Swipe left
-    } else {
-        if (deltaY > 0) slideDown(); // Swipe down
-        else slideUp(); // Swipe up
+// Merge and slide logic for slide functions
+function mergeAndSlide(array) {
+    const newArray = array.filter(val => val !== 0);
+    for (let i = 0; i < newArray.length - 1; i++) {
+        if (newArray[i] === newArray[i + 1]) {
+            newArray[i] *= 2;
+            score += newArray[i];
+            newArray.splice(i + 1, 1);
+        }
     }
-});
+    return [...newArray, ...Array(4 - newArray.length).fill(0)];
+}
 
-// Slide functions (unchanged)
+// Slide functions
 function slideUp() {
     for (let col = 0; col < 4; col++) {
-        let stack = [];
+        const column = [];
         for (let row = 0; row < 4; row++) {
-            const index = row * 4 + col;
-            if (cells[index] !== 0) stack.push(cells[index]);
+            column.push(cells[row * 4 + col]);
         }
-        mergeTiles(stack);
+        const newColumn = mergeAndSlide(column);
         for (let row = 0; row < 4; row++) {
-            const index = row * 4 + col;
-            cells[index] = stack[row] || 0;
+            cells[row * 4 + col] = newColumn[row];
         }
     }
     addRandomTile();
@@ -117,15 +101,13 @@ function slideUp() {
 
 function slideDown() {
     for (let col = 0; col < 4; col++) {
-        let stack = [];
+        const column = [];
         for (let row = 3; row >= 0; row--) {
-            const index = row * 4 + col;
-            if (cells[index] !== 0) stack.push(cells[index]);
+            column.push(cells[row * 4 + col]);
         }
-        mergeTiles(stack);
+        const newColumn = mergeAndSlide(column);
         for (let row = 3; row >= 0; row--) {
-            const index = row * 4 + col;
-            cells[index] = stack[row] || 0;
+            cells[row * 4 + col] = newColumn[3 - row];
         }
     }
     addRandomTile();
@@ -134,15 +116,10 @@ function slideDown() {
 
 function slideLeft() {
     for (let row = 0; row < 4; row++) {
-        let stack = [];
+        const rowArray = cells.slice(row * 4, row * 4 + 4);
+        const newRow = mergeAndSlide(rowArray);
         for (let col = 0; col < 4; col++) {
-            const index = row * 4 + col;
-            if (cells[index] !== 0) stack.push(cells[index]);
-        }
-        mergeTiles(stack);
-        for (let col = 0; col < 4; col++) {
-            const index = row * 4 + col;
-            cells[index] = stack[col] || 0;
+            cells[row * 4 + col] = newRow[col];
         }
     }
     addRandomTile();
@@ -151,29 +128,14 @@ function slideLeft() {
 
 function slideRight() {
     for (let row = 0; row < 4; row++) {
-        let stack = [];
-        for (let col = 3; col >= 0; col--) {
-            const index = row * 4 + col;
-            if (cells[index] !== 0) stack.push(cells[index]);
-        }
-        mergeTiles(stack);
-        for (let col = 3; col >= 0; col--) {
-            const index = row * 4 + col;
-            cells[index] = stack[col] || 0;
+        const rowArray = cells.slice(row * 4, row * 4 + 4).reverse();
+        const newRow = mergeAndSlide(rowArray);
+        for (let col = 0; col < 4; col++) {
+            cells[row * 4 + 3 - col] = newRow[col];
         }
     }
     addRandomTile();
     updateBoard();
-}
-
-function mergeTiles(stack) {
-    for (let i = 0; i < stack.length - 1; i++) {
-        if (stack[i] === stack[i + 1]) {
-            stack[i] *= 2;
-            score += stack[i];
-            stack.splice(i + 1, 1);
-        }
-    }
 }
 
 // Add restart functionality
